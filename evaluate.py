@@ -47,6 +47,23 @@ def password_strength_division(password):
             return i
     return -1
 
+def password_strength_in_hashes(password):
+    """
+        Estimate the number of hashes required to crack a given password.
+
+        Returns (estimate, quantifier) where quantifier is a string describing the estimate.
+    """
+    division = password_strength_division(password)
+
+    if division < 0:
+        hashes_required = get_password_count()
+        quantifier = "more than"
+    else:
+        hashes_required = get_password_count() * (division + 1) / DIVISIONS
+        quantifier = "less than"
+
+    return hashes_required, quantifier
+
 if __name__ == "__main__":
     nominal_hash_rate = 5 * 10 ** 3  # Approx for bcrypt on a decent desktop PC
 
@@ -65,19 +82,12 @@ if __name__ == "__main__":
     ]
 
     for password in test_passwords:
-        division = password_strength_division(password)
+        hashes_required, quantifier = password_strength_in_hashes(password)
 
-        if division < 0:
-            result = "Excellent!"
-            hashes_required = get_password_count()
-            time_estimate_quantifier = "more than"
-        else:
-            result = "{}/{}".format(division + 1, DIVISIONS)
-            hashes_required = get_password_count() * (division + 1) / DIVISIONS
-            time_estimate_quantifier = "less than"
+        result = "{:.0%}".format(hashes_required / get_password_count())
 
-        print("Password strength (%s): " % password, result)
+        print("Password strength (%s):" % password, result)
 
         crack_time = timedelta(seconds = hashes_required / nominal_hash_rate)
 
-        print("Cracking would take {} {}\n".format(time_estimate_quantifier, format_timedelta(crack_time, locale='en_US')))
+        print("Cracking would take {} {}\n".format(quantifier, format_timedelta(crack_time, locale='en_US')))
