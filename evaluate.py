@@ -13,7 +13,6 @@ __email__ = "djrodgerspryor@gmail.com"
 
 import cPickle as pickle
 from datetime import timedelta
-from babel.dates import format_timedelta
 
 bloom = __import__("python-simple-bloom")
 
@@ -64,6 +63,8 @@ def password_strength_in_hashes(password):
 def describe_password_strength(
         password,
         nominal_hash_rate = 5 * 10**3): # Approx for bcrypt on a decent desktop PC
+    from babel.dates import format_timedelta
+
     hashes_required, quantifier = password_strength_in_hashes(password)
 
     result = "{:.0%}".format(hashes_required / get_password_count())
