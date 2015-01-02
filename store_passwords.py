@@ -49,8 +49,8 @@ if __name__ == '__main__':
 
     with open(FILENAME) as f:
         for i, line in enumerate(f):
-            # TODO: this is broken - it assumes that passwords can't start with whitespace
-            password = line.strip()
+            # Strip trailing newline but assume that all other whitespace is part of the password
+            password = line[:-1]
             division = int(floor(i * DIVISIONS / password_count))
 
             filters[division].append(password)
