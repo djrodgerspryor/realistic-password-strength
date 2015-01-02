@@ -11,10 +11,7 @@ __version__ = "0.1"
 __maintainer__ = __author__
 __email__ = "djrodgerspryor@gmail.com"
 
-import sys
-import numpy as np
 import cPickle as pickle
-from math import floor
 from datetime import timedelta
 from babel.dates import format_timedelta
 
