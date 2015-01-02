@@ -22,7 +22,14 @@ bloom = __import__("python-simple-bloom")
 
 from store_passwords import DIVISIONS, count_passwords
 
-password_count = count_passwords()
+# Cache counting the passwords-file
+_password_count = None
+def get_password_count():
+    global _password_count
+
+    if not _password_count:
+        _password_count = count_passwords()
+    return _password_count
 
 # Cache loading filters
 _filters = None
@@ -62,11 +69,11 @@ if __name__ == "__main__":
 
         if division < 0:
             result = "Excellent!"
-            hashes_required = password_count
+            hashes_required = get_password_count()
             time_estimate_quantifier = "more than"
         else:
             result = "{}/{}".format(division + 1, DIVISIONS)
-            hashes_required = password_count * (division + 1) / DIVISIONS
+            hashes_required = get_password_count() * (division + 1) / DIVISIONS
             time_estimate_quantifier = "less than"
 
         print("Password strength (%s): " % password, result)

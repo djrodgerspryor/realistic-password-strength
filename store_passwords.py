@@ -51,6 +51,7 @@ if __name__ == '__main__':
 
     with open(FILENAME) as f:
         for i, line in enumerate(f):
+            # TODO: this is broken - it assumes that passwords can't start with whitespace
             password = line.strip()
             division = int(floor(i * DIVISIONS / password_count))
 
