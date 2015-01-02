@@ -1,0 +1,3 @@
+[submodule "python-simple-bloom"]
+	path = python-simple-bloom
+	url = git@github.com:djrodgerspryor/python-simple-bloom.git
