@@ -64,9 +64,23 @@ def password_strength_in_hashes(password):
 
     return hashes_required, quantifier
 
-if __name__ == "__main__":
-    nominal_hash_rate = 5 * 10 ** 3  # Approx for bcrypt on a decent desktop PC
+def describe_password_strength(
+        password,
+        nominal_hash_rate = 5 * 10**3): # Approx for bcrypt on a decent desktop PC
+    hashes_required, quantifier = password_strength_in_hashes(password)
 
+    result = "{:.0%}".format(hashes_required / get_password_count())
+
+    crack_time = timedelta(seconds = hashes_required / nominal_hash_rate)
+
+    result += " - cracking would take {} {}".format(
+        quantifier,
+        format_timedelta(crack_time, locale='en_US')
+    )
+
+    return result
+
+if __name__ == "__main__":
     test_passwords = [
         "test1",
         "thisismypassword",
@@ -81,13 +95,15 @@ if __name__ == "__main__":
         "mypa55word"
     ]
 
-    for password in test_passwords:
-        hashes_required, quantifier = password_strength_in_hashes(password)
-
-        result = "{:.0%}".format(hashes_required / get_password_count())
-
-        print("Password strength (%s):" % password, result)
-
-        crack_time = timedelta(seconds = hashes_required / nominal_hash_rate)
-
-        print("Cracking would take {} {}\n".format(quantifier, format_timedelta(crack_time, locale='en_US')))
+    heading = "Password: Strength - Cracking time"
+    heading += '\n' + '-' * len(heading)
+    print(heading)
+    print(
+        '\n'.join(
+            "{password}: {description}".format(
+                password=password,
+                description=describe_password_strength(password)
+            )
+            for password in test_passwords
+        )
+    )
